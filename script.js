@@ -111,15 +111,15 @@ while(1){
 
             //log.log("enrty.node_id " + entry.node_id + "\n");
             saveSendTime(entry);
-            log.log("On Sending\n");
-            for(j=0; j<send_table.length;j++){
-                log.log("send_table" + "[" + j + "]" + send_table[j].node_id + " | " +  send_table[j].seq_no + " | "  + send_table[j].send_time + "\n"); 
-             }            
+            // log.log("On Sending\n");
+            // for(j=0; j<send_table.length;j++){
+            //     log.log("send_table" + "[" + j + "]" + send_table[j].node_id + " | " +  send_table[j].seq_no + " | "  + send_table[j].send_time + "\n"); 
+            //  }            
         }
     }
     if(msgArray.length == 14){
         if(msgArray[0].startsWith("Received")){
-            log.log("On Receiving\n");
+            //log.log("On Receiving\n");
             
             //log.log(msgArray.length + "\n");
             senderID = parseInt(msgArray[10]);
@@ -132,9 +132,9 @@ while(1){
             entry = {node_id:senderID, seq_no:seq};
             //log.log("Sending entry send to lookupSendTime " + entry.node_id + ", " +  entry.seq_no + "\n");
             sendTime = lookupSendTime(entry);
-            for(j=0; j<send_table.length;j++){
-                log.log("send_table" + "[" + j + "]" + send_table[j].node_id + " | " +  send_table[j].seq_no + " | "  + send_table[j].send_time + "\n"); 
-             }
+            // for(j=0; j<send_table.length;j++){
+            //     log.log("send_table" + "[" + j + "]" + send_table[j].node_id + " | " +  send_table[j].seq_no + " | "  + send_table[j].send_time + "\n"); 
+            //  }
             if (sendTime > -1){
                 //we have a match in sendTable
                 totalLatency = totalLatency + (recv_time - sendTime);
