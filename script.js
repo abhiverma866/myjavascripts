@@ -11,10 +11,10 @@ receiverID = 0;
 PDR = 0;
 totalLatency = 0;
 AE2ED = 0;
-//seq=0;
-//st=0;
-//recv_time=0;
-//sendTime=0;
+seq=0;
+st=0;
+recv_time=0;
+sendTime=0;
 entry = {};
 
 
@@ -27,7 +27,7 @@ function saveSendTime(element){
     var i;
   
     for(i=0; i<send_table.length;i++){
-        if(send_table[i].node_id == element.node_id){
+        if((send_table[i].node_id == element.node_id) && (send_table[i].seq_no == element.seq_no)){
         //location = i;
         exists = 1;
         break;
@@ -98,33 +98,43 @@ while(1){
     //log.log(msgArray.length + "\n");
     if(msgArray.length == 9){
         if(msgArray[0].equals("Sending")){
+            
             // sent packet
             senderID = parseInt(msgArray[8]);
             packetsSent[senderID]++;
             //var id = msgArray[8];
-            var seq = parseInt(msgArray[5]);
+            seq = parseInt(msgArray[5]);
             //log.log("seq " + seq + "\n")
-            var st = Number(time);
+            st = Number(time);
             entry = {node_id:senderID, seq_no:seq, send_time:st};
             //log.log("Sending entry to saveSendTime " + entry.node_id + ", " +  entry.seq_no + ","  + entry.send_time + "\n");
 
             //log.log("enrty.node_id " + entry.node_id + "\n");
-            saveSendTime(entry);            
+            saveSendTime(entry);
+            log.log("On Sending\n");
+            for(j=0; j<send_table.length;j++){
+                log.log("send_table" + "[" + j + "]" + send_table[j].node_id + " | " +  send_table[j].seq_no + " | "  + send_table[j].send_time + "\n"); 
+             }            
         }
     }
     if(msgArray.length == 14){
         if(msgArray[0].startsWith("Received")){
+            log.log("On Receiving\n");
+            
             //log.log(msgArray.length + "\n");
             senderID = parseInt(msgArray[10]);
-            var seq = parseInt(msgArray[4]);
-            var recv_time = Number(time);
+            seq = parseInt(msgArray[4]);
+            recv_time = Number(time);
             receiverID = parseInt(msgArray[13]);
             packetsReceived[receiverID]++;
             totalReceived = totalSent = 0;
             
             entry = {node_id:senderID, seq_no:seq};
             //log.log("Sending entry send to lookupSendTime " + entry.node_id + ", " +  entry.seq_no + "\n");
-            var sendTime = lookupSendTime(entry);
+            sendTime = lookupSendTime(entry);
+            for(j=0; j<send_table.length;j++){
+                log.log("send_table" + "[" + j + "]" + send_table[j].node_id + " | " +  send_table[j].seq_no + " | "  + send_table[j].send_time + "\n"); 
+             }
             if (sendTime > -1){
                 //we have a match in sendTable
                 totalLatency = totalLatency + (recv_time - sendTime);
